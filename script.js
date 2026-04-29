@@ -9,13 +9,17 @@ async function loadCSV() {
 
   const lines = text.trim().split("\n");
 
-  // ★ BOM除去を追加
-  const headers = lines[0].replace(/^\uFEFF/, "").split(",");
+  // ★ 行全体から BOM を除去
+  lines[0] = lines[0].replace(/^\uFEFF/, "");
+
+  const headers = lines[0].split(",");
 
   const data = {};
 
   for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(",");
+    // ★ データ行にも BOM が付く可能性があるので除去
+    const cleanLine = lines[i].replace(/^\uFEFF/, "");
+    const cols = cleanLine.split(",");
 
     const row = {};
     headers.forEach((h, idx) => {

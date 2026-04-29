@@ -7,9 +7,10 @@ async function loadCSV() {
   const response = await fetch("data.csv");
   const text = await response.text();
 
-  const lines = text.trim().split("\n");
+  // 行ごとに分割（CRLF / LF 両対応）
+  const lines = text.trim().split(/\r?\n/);
 
-  // ★ 行全体から BOM を除去
+  // BOM除去
   lines[0] = lines[0].replace(/^\uFEFF/, "");
 
   const headers = lines[0].split(",");
@@ -17,8 +18,9 @@ async function loadCSV() {
   const data = {};
 
   for (let i = 1; i < lines.length; i++) {
-    // ★ データ行にも BOM が付く可能性があるので除去
-    const cleanLine = lines[i].replace(/^\uFEFF/, "");
+    // 行頭のBOM除去 + 行末の \r 除去
+    const cleanLine = lines[i].replace(/^\uFEFF/, "").replace(/\r$/, "");
+
     const cols = cleanLine.split(",");
 
     const row = {};
@@ -26,6 +28,7 @@ async function loadCSV() {
       row[h] = cols[idx];
     });
 
+    // ID と 開催日を格納
     data[row["ID"]] = {
       date: row["開催日"]
     };

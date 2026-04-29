@@ -8,8 +8,9 @@ async function loadCSV() {
   const text = await response.text();
 
   const lines = text.trim().split("\n");
-  const headeconst headers = lines[0].replace(/^\uFEFF/, "").split(",");
-rs = lines[0].split(",");
+
+  // ★ BOM除去を追加
+  const headers = lines[0].replace(/^\uFEFF/, "").split(",");
 
   const data = {};
 
@@ -28,6 +29,7 @@ rs = lines[0].split(",");
 
   return data;
 }
+
 
 // Googleカレンダー登録
 function addToCalendar(dateStr) {

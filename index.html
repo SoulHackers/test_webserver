@@ -3,21 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <title>芝刈り当番確認ページ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    h2 {
+      background: #4CAF50;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th {
+      background: #eee;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    button {
+      padding: 8px 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    ul {
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body>
-  <h2>芝刈り当番確認</h2>
 
-  <p>IDを入力してください。</p>
-  <input type="text" id="inputId" placeholder="例：A">
-  <button onclick="search()">検索</button>
+  <h2>芝刈り当番確認ページ</h2>
 
-  <h3>結果</h3>
-  <div id="result"></div>
+  <div class="box">
+    <h3>注意事項</h3>
+    <ul>
+      <li>雨の場合は基本的に中止となります。</li>
+      <li>中止の場合、振替日は園から別途ご連絡します。</li>
+      <li>IDは保護者ごとに配布されたものをご使用ください。</li>
+    </ul>
+  </div>
 
-  <hr>
+  <div class="box">
+    <h3>IDで当番を確認</h3>
+    <p>IDを入力してください。</p>
+    <input type="text" id="inputId" placeholder="例：A">
+    <button onclick="search()">検索</button>
 
-  <h3>全体スケジュール（ID表記）</h3>
-  <div id="allSchedule"></div>
+    <h4>結果</h4>
+    <div id="result"></div>
+  </div>
+
+  <div class="box">
+    <h3>全体スケジュール（ID表記）</h3>
+    <div id="allSchedule"></div>
+  </div>
 
   <script src="script.js"></script>
 </body>

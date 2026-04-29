@@ -8,7 +8,8 @@ async function loadCSV() {
   const text = await response.text();
 
   const lines = text.trim().split("\n");
-  const headers = lines[0].split(",");
+  const headeconst headers = lines[0].replace(/^\uFEFF/, "").split(",");
+rs = lines[0].split(",");
 
   const data = {};
 

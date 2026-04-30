@@ -83,19 +83,39 @@ async function showAllSchedule() {
     grouped[item.date].push(item.id);
   });
 
-  // テーブル生成
-  let html = "<div class='table-wrapper'><table><tr><th>日付</th><th>ID</th></tr>";
+  // 最大ID数を取得（列数を揃えるため）
+  const maxIds = Math.max(...Object.values(grouped).map(ids => ids.length));
 
+  // テーブル生成
+  let html = "<div class='table-wrapper'><table><tr><th>日付</th>";
+
+  // ID列のヘッダーを動的に作成
+  for (let i = 1; i <= maxIds; i++) {
+    html += `<th>ID${i}</th>`;
+  }
+  html += "</tr>";
+
+  // 行を作成
   Object.keys(grouped)
     .sort()
     .forEach(date => {
-      html += `<tr><td>${formatDate(date)}</td><td>${grouped[date].join(", ")}</td></tr>`;
+      html += `<tr><td>${formatDate(date)}</td>`;
+
+      const ids = grouped[date];
+
+      // IDをセルに入れる（足りない分は空欄）
+      for (let i = 0; i < maxIds; i++) {
+        html += `<td>${ids[i] ? ids[i] : ""}</td>`;
+      }
+
+      html += "</tr>";
     });
 
   html += "</table></div>";
 
   document.getElementById("allSchedule").innerHTML = html;
 }
+
 
 // 日付整形
 function formatDate(dateStr) {

@@ -65,7 +65,7 @@ async function search() {
 
   if (hit) {
     result.innerHTML =
-      `ID「${id}」の当番日は <strong>${formatDate(hit.date)}</strong> です。<br><br>` +
+      `ID「${id}」の当番日は <span class="result-date">${formatDate(hit.date)}</span> です。<br><br>` +
       `<button onclick="addToCalendar('${hit.date}')">Googleカレンダーに登録</button>`;
   } else {
     result.innerHTML = "該当するIDが見つかりません。";
@@ -83,19 +83,26 @@ async function showAllSchedule() {
     grouped[item.date].push(item.id);
   });
 
-  // 最大ID数を取得（列数を揃えるため）
+  // 最大ID数を取得
   const maxIds = Math.max(...Object.values(grouped).map(ids => ids.length));
 
   // テーブル生成
-  let html = "<div class='table-wrapper'><table><tr><th>日付</th>";
+  let html = "<div class='table-wrapper'><table>";
 
-  // ID列のヘッダーを動的に作成
+  // ★ 1行目：当番割り当て（ID）を結合セル風に表示
+  html += `<tr>
+    <th rowspan="2">日付</th>
+    <th colspan="${maxIds}">当番割り当て（ID）</th>
+  </tr>`;
+
+  // ★ 2行目：ID列の番号（小さく表示）
+  html += "<tr>";
   for (let i = 1; i <= maxIds; i++) {
-    html += `<th>ID${i}</th>`;
+    html += `<th class="id-header">ID${i}</th>`;
   }
   html += "</tr>";
 
-  // 行を作成
+  // データ行
   Object.keys(grouped)
     .sort()
     .forEach(date => {
@@ -103,7 +110,6 @@ async function showAllSchedule() {
 
       const ids = grouped[date];
 
-      // IDをセルに入れる（足りない分は空欄）
       for (let i = 0; i < maxIds; i++) {
         html += `<td>${ids[i] ? ids[i] : ""}</td>`;
       }

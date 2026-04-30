@@ -53,6 +53,28 @@
     ul {
       margin-top: 0;
     }
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 300px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    #inputId {
+      font-size: 20px;
+      padding: 10px;
+      width: 150px;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 15px;
+    }
   </style>
 </head>
 <body>
@@ -71,8 +93,8 @@
   <div class="box">
     <h3>IDで当番を確認</h3>
     <p>IDを入力してください。</p>
-    <input type="text" id="inputId" placeholder="例：A">
-    <button onclick="search()">検索</button>
+    <input type="text" id="inputId" placeholder="例：S01" style="font-size:20px; padding:10px; width:150px;">
+    <button onclick="search()" style="font-size:18px; padding:10px 15px;">検索</button>
 
     <h4>結果</h4>
     <div id="result"></div>

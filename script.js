@@ -7,7 +7,7 @@ async function loadCSV() {
   const response = await fetch("data.csv");
   const text = await response.text();
 
-  // 行ごとに分割（CRLF / LF 両対応）
+  // CRLF / LF 両対応
   const lines = text.trim().split(/\r?\n/);
 
   // BOM除去
@@ -15,12 +15,10 @@ async function loadCSV() {
 
   const headers = lines[0].split(",");
 
-  const data = {};
+  const data = [];
 
   for (let i = 1; i < lines.length; i++) {
-    // 行頭のBOM除去 + 行末の \r 除去
     const cleanLine = lines[i].replace(/^\uFEFF/, "").replace(/\r$/, "");
-
     const cols = cleanLine.split(",");
 
     const row = {};
@@ -28,15 +26,14 @@ async function loadCSV() {
       row[h] = cols[idx];
     });
 
-    // ID と 開催日を格納
-    data[row["ID"]] = {
+    data.push({
+      id: row["ID"],
       date: row["開催日"]
-    };
+    });
   }
 
   return data;
 }
-
 
 // Googleカレンダー登録
 function addToCalendar(dateStr) {
@@ -64,26 +61,38 @@ async function search() {
   }
 
   const data = await loadCSV();
+  const hit = data.find(item => item.id === id);
 
-  if (data[id]) {
-    const info = data[id];
+  if (hit) {
     result.innerHTML =
-      `ID「${id}」の当番日は <strong>${formatDate(info.date)}</strong> です。<br><br>` +
-      `<button onclick="addToCalendar('${info.date}')">Googleカレンダーに登録</button>`;
+      `ID「${id}」の当番日は <strong>${formatDate(hit.date)}</strong> です。<br><br>` +
+      `<button onclick="addToCalendar('${hit.date}')">Googleカレンダーに登録</button>`;
   } else {
     result.innerHTML = "該当するIDが見つかりません。";
   }
 }
 
-// 全体スケジュール表示
+// 全体スケジュール表示（日付 → ID一覧）
 async function showAllSchedule() {
   const data = await loadCSV();
 
-  let html = "<table border='1' cellpadding='5'><tr><th>ID</th><th>当番日</th></tr>";
-  for (const id in data) {
-    html += `<tr><td>${id}</td><td>${formatDate(data[id].date)}</td></tr>`;
-  }
-  html += "</table>";
+  // 日付ごとにまとめる
+  const grouped = {};
+  data.forEach(item => {
+    if (!grouped[item.date]) grouped[item.date] = [];
+    grouped[item.date].push(item.id);
+  });
+
+  // テーブル生成
+  let html = "<div class='table-wrapper'><table><tr><th>日付</th><th>ID</th></tr>";
+
+  Object.keys(grouped)
+    .sort()
+    .forEach(date => {
+      html += `<tr><td>${formatDate(date)}</td><td>${grouped[date].join(", ")}</td></tr>`;
+    });
+
+  html += "</table></div>";
 
   document.getElementById("allSchedule").innerHTML = html;
 }

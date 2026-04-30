@@ -91,7 +91,7 @@ async function showAllSchedule() {
 
   // ★ 1行目：当番割り当て（ID）を結合セル風に表示
   html += `<tr>
-    <th rowspan="2">日付</th>
+    <th rowspan="1">日付</th>
     <th colspan="${maxIds}">当番割り当て（ID）</th>
   </tr>`;
 

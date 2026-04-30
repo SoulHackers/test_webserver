@@ -52,7 +52,7 @@ function addToCalendar(dateStr) {
 
 // ID検索
 async function search() {
-  const id = document.getElementById("inputId").value.trim();
+  let id = document.getElementById("inputId").value.trim();
   const result = document.getElementById("result");
 
   if (!id) {

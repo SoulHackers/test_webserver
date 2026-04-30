@@ -26,10 +26,11 @@ async function loadCSV() {
       row[h] = cols[idx];
     });
 
-    data.push({
-      id: row["ID"],
-      date: row["開催日"]
-    });
+  data.push({
+    id: row["ID"],
+    date: row["開催日"],
+    reason: row["理由"] || ""
+  });
   }
 
   return data;
@@ -102,52 +103,56 @@ async function setupIdList() {
 async function showAllSchedule() {
   const data = await loadCSV();
 
-  // 日付ごとにまとめる
+  // 日付ごとにまとめる（ID と理由を保持）
   const grouped = {};
   data.forEach(item => {
-    if (!grouped[item.date]) grouped[item.date] = [];
-    grouped[item.date].push(item.id);
+    if (!grouped[item.date]) {
+      grouped[item.date] = { ids: [], reason: item.reason };
+    }
+    if (item.id) {
+      grouped[item.date].ids.push(item.id);
+    }
   });
 
-  // 最大ID数を取得
-  const maxIds = Math.max(...Object.values(grouped).map(ids => ids.length));
+  // CSV に存在する日付をすべて取得（ソート）
+  const dates = Object.keys(grouped).sort();
 
-  // テーブル生成
+  // 最大ID数
+  const maxIds = Math.max(
+    ...dates.map(date => grouped[date].ids.length),
+    1
+  );
+
   let html = "<div class='table-wrapper'><table>";
 
-  // ★ 1行目：当番割り当て（ID）を結合セル風に表示
   html += `<tr>
     <th rowspan="1">日付</th>
     <th colspan="${maxIds}">当番割り当て（ID）</th>
   </tr>`;
 
-  // ★ 2行目：ID列の番号（小さく表示）
-/*  html += "<tr>";
-  for (let i = 1; i <= maxIds; i++) {
-    html += `<th class="id-header">ID${i}</th>`;
-  }
-  html += "</tr>";
-*/
-  // データ行
-  Object.keys(grouped)
-    .sort()
-    .forEach(date => {
+  dates.forEach(date => {
+    const entry = grouped[date];
+
+    if (entry.reason) {
+      // ★ お休み週
+      html += `<tr class="off">
+        <td>${formatDate(date)}</td>
+        <td colspan="${maxIds}">${entry.reason}</td>
+      </tr>`;
+    } else {
+      // ★ 通常週
       html += `<tr><td>${formatDate(date)}</td>`;
-
-      const ids = grouped[date];
-
       for (let i = 0; i < maxIds; i++) {
-        html += `<td>${ids[i] ? ids[i] : ""}</td>`;
+        html += `<td>${entry.ids[i] ? entry.ids[i] : ""}</td>`;
       }
-
       html += "</tr>";
-    });
+    }
+  });
 
   html += "</table></div>";
 
   document.getElementById("allSchedule").innerHTML = html;
 }
-
 
 // 日付整形
 function formatDate(dateStr) {

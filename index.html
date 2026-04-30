@@ -105,7 +105,8 @@
   <div class="box">
     <h3>IDで当番を確認</h3>
     <p>IDを入力してください。</p>
-    <input type="text" id="inputId" placeholder="例：S01" style="font-size:20px; padding:10px; width:150px;">
+    <input type="text" id="inputId" placeholder="例：S01" oninput="normalizeInput()" autocomplete="off" list="idlist">
+    <datalist id="idlist"></datalist>
     <button onclick="search()" style="font-size:18px; padding:10px 15px;">検索</button>
 
     <h4>結果</h4>
@@ -117,6 +118,6 @@
     <div id="allSchedule"></div>
   </div>
 
-  <script src="script.js?v=6"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>

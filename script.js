@@ -60,6 +60,9 @@ async function search() {
     return;
   }
 
+  // ★ 全角 → 半角に変換
+  id = toHalfWidth(id).toUpperCase();
+
   const data = await loadCSV();
   const hit = data.find(item => item.id === id);
 
@@ -71,6 +74,36 @@ async function search() {
     result.innerHTML = "該当するIDが見つかりません。";
   }
 }
+
+function toHalfWidth(str) {
+  return str.replace(/[！-～]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  });
+}
+
+function normalizeInput() {
+  const input = document.getElementById("inputId");
+  input.value = toHalfWidth(input.value).toUpperCase();
+}
+
+// CSVからID一覧を読み込み、datalist にセット
+async function setupIdList() {
+  const data = await loadCSV();
+  const list = document.getElementById("idlist");
+
+  data.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.id;
+    list.appendChild(option);
+  });
+}
+
+window.onload = function() {
+  showAllSchedule();
+  setupIdList();
+};
+
+
 
 // 全体スケジュール表示（日付 → ID一覧）
 async function showAllSchedule() {
@@ -96,14 +129,12 @@ async function showAllSchedule() {
   </tr>`;
 
   // ★ 2行目：ID列の番号（小さく表示）
-  /*
-  html += "<tr>";
+/*  html += "<tr>";
   for (let i = 1; i <= maxIds; i++) {
     html += `<th class="id-header">ID${i}</th>`;
   }
   html += "</tr>";
-  */
-
+*/
   // データ行
   Object.keys(grouped)
     .sort()

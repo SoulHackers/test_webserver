@@ -96,11 +96,13 @@ async function showAllSchedule() {
   </tr>`;
 
   // ★ 2行目：ID列の番号（小さく表示）
+  /*
   html += "<tr>";
   for (let i = 1; i <= maxIds; i++) {
     html += `<th class="id-header">ID${i}</th>`;
   }
   html += "</tr>";
+  */
 
   // データ行
   Object.keys(grouped)

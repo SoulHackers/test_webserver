@@ -98,13 +98,6 @@ async function setupIdList() {
   });
 }
 
-window.onload = function() {
-  showAllSchedule();
-  setupIdList();
-};
-
-
-
 // 全体スケジュール表示（日付 → ID一覧）
 async function showAllSchedule() {
   const data = await loadCSV();
@@ -161,3 +154,9 @@ function formatDate(dateStr) {
   const d = new Date(dateStr);
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
+
+
+window.onload = function() {
+  showAllSchedule();
+  setupIdList();
+};
